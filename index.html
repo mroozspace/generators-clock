@@ -48,6 +48,9 @@
 
   // declare generators
   function* hourGenerator(value) {
+    if (value > 12 ) {
+      value = value - 12
+    }
     hr = value
     while (true) {
       // console.log('hr ', hr)
@@ -101,9 +104,12 @@
   // run interval
   setInterval(nextSecond, 1000);
   setInterval(() => {
-    const time = `${hr} : ${min} : ${sec}`
+    const display = value => value.toString().length === 1 ? '0' + value.toString() : value
+    const displayHour = display(hr)
+    const displayminute = display(min)
+    const displaysecond = display(sec)
+    const time = `${displayHour} : ${displayminute} : ${displaysecond}`
     text.textContent = time
   }, 1000);
-
 </script>
 </html>
