@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .container {
+      display: flex;
+      background-color: #333;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    .text {
+      color: #dfdfdf;
+    }
+  </style>
+  <title>Generator</title>
+</head>
+<body>
+    <!-- Użyj generatora/ów do zwracania kolejnej sekundy/minuty/godziny. Generator(y) mają działać tak, by po otrzymaniu wartości 59 (lub 12 dla godzinowego) wyołanie generator.next() dawało 00 (iteracja cykliczna) -->
+    <!-- Generator sekundowy wywołuj w setInterval, pozostałe gdy generator mniejszej jednostki osiągnie wartość 59. -->
+    <!-- Zegar powinien przyjmować godzinę wejścia na stronę jako punkt startowy (jeżeli będziesz miał/a problem z tym punktem - postaraj się zrobić pozostałe - każdy punkt oceniamy osobno) -->
+    <!-- Zegar powinien być wyświetlany w formacie hh:mm:ss (np 07:15:09 - by otrzymać 07 użyj metody es7-es9) -->
+    <!-- Gotowy zegar wrzuć na GHP -->
+    <div class="container">
+      <h1 class="text"></h1>
+    </div>
+</body>
+<script>
+  const text = document.querySelector('.text')
+
+  // get initial hh:mm:ss
+  const initialDate = new Date();
+  const currentSecond = initialDate.getSeconds()
+  const currentMinute = initialDate.getMinutes()
+  const currentHour = initialDate.getHours()
+
+  var hr, min, sec
+
+  // declare generators
+  function* hourGenerator(value) {
+    hr = value
+    while (true) {
+      // console.log('hr ', hr)
+      yield hr
+      hr += 1
+      if (hr === 12) {
+        hr = 0
+      }
+    }
+  }
+
+  function* minuteGenerator(value) {
+    min = value
+    while (true) {
+      // console.log('min ', min)
+      yield min
+      min += 1
+      if (min === 60) {
+        min = 0
+        hours.next()
+      }
+    }
+  }
+
+  function* secondGenerator(value) {
+    sec = value
+    while (true) {
+      // console.log('sec ', sec)
+      yield sec
+      sec += 1
+      if (sec === 60 ) {
+        sec = 0
+        minutes.next()
+      }
+    }
+  }
+
+  const seconds = secondGenerator(currentSecond)
+  const minutes = minuteGenerator(currentMinute)
+  const hours = hourGenerator(currentHour)
+
+  const nextSecond = () => seconds.next()
+  const nextMinute = () => minutes.next()
+  const nextHour = () => hours.next()
+
+  // initialize generators
+  nextSecond()
+  nextMinute()
+  nextHour()
+
+  // run interval
+  setInterval(nextSecond, 1000);
+  setInterval(() => {
+    const time = `${hr} : ${min} : ${sec}`
+    text.textContent = time
+  }, 1000);
+
+</script>
+</html>
